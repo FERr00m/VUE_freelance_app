@@ -1,30 +1,34 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <the-navbar></the-navbar>
+  <div class="container with-nav">
+    <router-view
+    @changeTaskStatus="changeTaskStatus"
+    />
+  </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import TheNavbar from '@/components/TheNavbar'
 
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
+export default {
+  components: {
+    TheNavbar
+  },
+  methods: {
+    changeTaskStatus (e) {
+      this.$store.state.tasks.find(t => t.id === Number(e.id)).status = e.status
+      localStorage.setItem('tasks', JSON.stringify(this.$store.state.tasks))
+    }
+  },
+  beforeMount () {
+    const localTasks = JSON.parse(localStorage.getItem('tasks')) || []
+    if (localTasks.length > 0) {
+      this.$store.state.tasks = localTasks
     }
   }
 }
+</script>
+
+<style>
+
 </style>
